@@ -1,0 +1,216 @@
+zabbix_export:
+  version: '6.0'
+  date: '2023-09-21T09:54:21Z'
+  groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 02cb435881494119b0f82584582442ac
+      template: 'Ubiquiti M5'
+      name: 'Ubiquiti M5'
+      groups:
+        - name: Templates
+      items:
+        - uuid: d68e2fe49dc742009aa7a7dc782318a7
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          tags:
+            - tag: Application
+              value: ICMP
+          triggers:
+            - uuid: 83f0e3d962e3473e90a2ab4944fed2dc
+              expression: 'max(/Ubiquiti M5/icmpping,#3)=0'
+              name: 'Unavailable by ICMP ping'
+              priority: HIGH
+        - uuid: 1f1a1188fe4a4960a9801805de846108
+          name: 'ICMP loss'
+          type: SIMPLE
+          key: icmppingloss
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: Application
+              value: ICMP
+        - uuid: f20d289b1fc640e2a79a202a20de3656
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          value_type: FLOAT
+          units: s
+          tags:
+            - tag: Application
+              value: ICMP
+        - uuid: c418b149b61848f7a33ad7e876066b8b
+          name: 'Bits received eth0'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.2.2.1.10.2
+          key: ifInOctets
+          units: bps
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+            - type: MULTIPLIER
+              parameters:
+                - '8'
+        - uuid: 8816bcf403074f7d93a6b6d0f1a37523
+          name: 'Bits sent eth0'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.2.2.1.16.2
+          key: ifOutOctets
+          units: bps
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+            - type: MULTIPLIER
+              parameters:
+                - '8'
+        - uuid: 9674fe7985b94ff09785f0b7f61d7985
+          name: 'Ethernet Data Port Speed'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.2.2.1.5.2
+          key: ifSpeed
+          units: bps
+          tags:
+            - tag: Network
+              value: Speed
+          triggers:
+            - uuid: ea26456bad32472aaf37a4311dcd01d0
+              expression: 'last(/Ubiquiti M5/ifSpeed)<100000000'
+              name: 'Data Port Link Speed lower 100 Mbps'
+              priority: AVERAGE
+        - uuid: be5188db822347a1980f6d6d25bf4888
+          name: Uptime
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.1.3.0
+          key: sysUpTimeInstance
+          units: uptime
+      discovery_rules:
+        - uuid: e282242c187849f9b71b1211900d5613
+          name: 'Station List'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.41112.1.4.7.1.2]'
+          key: ubntStaName
+          item_prototypes:
+            - uuid: 8279baf260c140e8a538a9ac8cb644bd
+              name: 'Station Name {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.2.{#SNMPINDEX}'
+              key: 'ubntStaName[{#SNMPVALUE}]'
+              trends: '0'
+              value_type: TEXT
+            - uuid: fdae79e44d944a3d89860583ba5beab3
+              name: 'Station Noise Floor {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.4.{#SNMPINDEX}'
+              key: 'ubntStaNoiseFloor[{#SNMPVALUE}]'
+              value_type: FLOAT
+              units: dBm
+            - uuid: c8c6c0c682c94171bc7020db4828f853
+              name: 'Bytes RX  {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.14.{#SNMPINDEX}'
+              key: 'ubntStaRxBytes[{#SNMPVALUE}]'
+              status: DISABLED
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+            - uuid: 92affb8640764e788237d7327176bea6
+              name: 'Station Signal Strength {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.3.{#SNMPINDEX}'
+              key: 'ubntStaSignal[{#SNMPVALUE}]'
+              value_type: FLOAT
+              units: dBm
+            - uuid: 212e110b08df4fd88e4e7329e4edece1
+              name: 'Bytes TX   {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.13.{#SNMPINDEX}'
+              key: 'ubntStaTxBytes[{#SNMPVALUE}]'
+              status: DISABLED
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+            - uuid: 7e7d129bac604ff88134c102ab532b2f
+              name: 'Station Rate TX  {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.11.{#SNMPINDEX}'
+              key: 'ubntStaTxRate[{#SNMPVALUE}]'
+              units: bps
+              tags:
+                - tag: Wireless
+                  value: Capacity
+            - uuid: 3fc8c0478fc24c71b6a37bb4236a80e2
+              name: 'CCQ of Station {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.6.{#SNMPINDEX}'
+              key: 'ubntWlStatCcq[{#SNMPVALUE}]'
+              units: '%'
+              tags:
+                - tag: Wireless
+                  value: CCQ
+              trigger_prototypes:
+                - uuid: 670599049a5542839ce0e4c02bd39a8a
+                  expression: 'last(/Ubiquiti M5/ubntWlStatCcq[{#SNMPVALUE}])<80'
+                  name: 'CCQ of Station {#SNMPVALUE}'
+                  opdata: 'Current state:{ITEM.LASTVALUE1}'
+                  priority: INFO
+            - uuid: 7c3ba4f7d6f64e608ba284cc852d9a59
+              name: 'Station Rate RX  {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.4.7.1.12.{#SNMPINDEX}'
+              key: 'ubntWlStatRxRate[{#SNMPVALUE}]'
+              units: bps
+              tags:
+                - tag: Wireless
+                  value: Capacity
+          trigger_prototypes:
+            - uuid: 56586f7fb56a4ddfae75db5cc0da478f
+              expression: '(last(/Ubiquiti M5/ubntWlStatRxRate[{#SNMPVALUE}])<24000000 or last(/Ubiquiti M5/ubntStaTxRate[{#SNMPVALUE}])<24000000) and left(last(/Ubiquiti M5/ubntStaName[{#SNMPVALUE}]),2)="lu"'
+              name: 'TX/RX Capacity {#SNMPVALUE} lower than 24 Mbps'
+              priority: WARNING
+            - uuid: a66f49ca92d04d5fb232cebd141ff2fd
+              expression: '(last(/Ubiquiti M5/ubntWlStatRxRate[{#SNMPVALUE}])<70000000 or last(/Ubiquiti M5/ubntStaTxRate[{#SNMPVALUE}])<70000000) and left(last(/Ubiquiti M5/ubntStaName[{#SNMPVALUE}]),1)="p"'
+              name: 'TX/RX Capacity {#SNMPVALUE} lower than 70 Mbps'
+              priority: WARNING
+  graphs:
+    - uuid: 5307c2c8d73e4ba49041d1eb9f42b888
+      name: 'ICMP ping'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'Ubiquiti M5'
+            key: icmpping
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: 'Ubiquiti M5'
+            key: icmppingsec
+    - uuid: 72b1398ba48d436bb3cef9261a978834
+      name: 'Throughput TX/RX ETH0'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'Ubiquiti M5'
+            key: ifInOctets
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: 'Ubiquiti M5'
+            key: ifOutOctets

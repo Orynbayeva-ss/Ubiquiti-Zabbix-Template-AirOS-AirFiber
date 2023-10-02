@@ -1,0 +1,193 @@
+zabbix_export:
+  version: '6.0'
+  date: '2023-09-21T09:55:39Z'
+  groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 04d966324b394dd488e5542b68ad8615
+      template: 'AF60LR Radio'
+      name: 'AF60LR Radio'
+      groups:
+        - name: Templates
+      items:
+        - uuid: 21d6c3b2c68e4f4da37cbc2ca912663e
+          name: 'Channel Bandwidth'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.11.1.1.3.1
+          key: af60lr.radio.bandwidth
+          status: DISABLED
+          units: '!MHz'
+        - uuid: 30951e87a74b4962866e3ccfa9a15e65
+          name: Frequency
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.11.1.1.2.1
+          key: af60lr.radio.frequency
+          status: DISABLED
+          units: '!MHz'
+        - uuid: 38611479127741678356d6f9d01f2a02
+          name: 'GPS Satellites Count'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.11.1.4.8.1
+          key: af60lr.radio.gps
+          status: DISABLED
+        - uuid: 670fcc0df7a04bacbc785d016ae23988
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          triggers:
+            - uuid: 9eaef85aa5d44167a13271c20ab4a360
+              expression: 'max(/AF60LR Radio/icmpping,#3)=0'
+              name: 'Unavailable by ICMP ping'
+              priority: HIGH
+        - uuid: b81ff1424835421c85cd18497cb611eb
+          name: 'ICMP loss'
+          type: SIMPLE
+          key: icmppingloss
+          value_type: FLOAT
+          units: '%'
+        - uuid: 9490de05231942ac9b43453c445ec3fb
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          value_type: FLOAT
+          units: s
+        - uuid: c1f791894d6f430fb735bb5794dedb72
+          name: 'Ethernet Data Port Speed'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.2.2.1.5.4
+          key: ifSpeed
+          units: bps
+          triggers:
+            - uuid: a3341f6b38654199aea87ad593689056
+              expression: 'last(/AF60LR Radio/ifSpeed)=0 or last(/AF60LR Radio/ifSpeed)<"1 Gbps"'
+              name: 'Data Port Link Speed is Not Gigabit on {HOSTNAME}'
+              priority: AVERAGE
+      discovery_rules:
+        - uuid: c7140d232e5945dfb907c9dcf59a5773
+          name: Radio
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#IFMAC},.1.3.6.1.4.1.41112.1.11.1.3.1.1]'
+          key: af60lr.radio
+          item_prototypes:
+            - uuid: 9d05b1c5f4f841b88c2fef2e329d5f5d
+              name: '{#IFMAC} Connection Time'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.17.{#SNMPINDEX}'
+              key: '.af60lr.radio.[{#SNMPINDEX}.uptime]'
+              units: s
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '0.01'
+            - uuid: 78f050721f6d43c7983e52a0d99de7d7
+              name: '{#IFMAC} Capacity RX'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.8.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.capacity.rx]'
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1000'
+            - uuid: cf4dbc4a15ef4df5955afeee40dd7dc2
+              name: '{#IFMAC} Capacity TX'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.7.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.capacity.tx]'
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1000'
+            - uuid: 6a5dafb0bf1b41859ffd8b0c05c23628
+              name: '{#IFMAC} Signal Remote'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.18.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.signal.remote]'
+              value_type: FLOAT
+              units: dBm
+            - uuid: d4af91ce389f4cba91be3122f93baff2
+              name: '{#IFMAC} Signal'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.3.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.signal]'
+              value_type: FLOAT
+              units: dBm
+            - uuid: 1166fbe669d8458c9c99e18c5822b7bb
+              name: '{#IFMAC} SNR'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.4.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.snr]'
+              value_type: FLOAT
+              units: dB
+            - uuid: 8d9721e036d246b9bc4b3fde047ac9e8
+              name: '{#IFMAC} Throughput RX'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.10.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.throughput.rx]'
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+            - uuid: 50606f5a4fac43b9bfa03e97c14d558e
+              name: '{#IFMAC} Throughput TX'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.41112.1.11.1.3.1.9.{#SNMPINDEX}'
+              key: 'af60lr.radio.[{#SNMPINDEX}.throughput.tx]'
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+          graph_prototypes:
+            - uuid: f76a8ad93abc4e3286d69ba4939325e5
+              name: 'Station Capacity / Bytes RX'
+              graph_items:
+                - color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'AF60LR Radio'
+                    key: 'af60lr.radio.[{#SNMPINDEX}.capacity.rx]'
+                - sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'AF60LR Radio'
+                    key: 'af60lr.radio.[{#SNMPINDEX}.throughput.rx]'
+            - uuid: 79a7f5b6c1a845beb6bb342b64d6f203
+              name: 'Station Capacity / Bytes TX'
+              graph_items:
+                - color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'AF60LR Radio'
+                    key: 'af60lr.radio.[{#SNMPINDEX}.capacity.tx]'
+                - sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'AF60LR Radio'
+                    key: 'af60lr.radio.[{#SNMPINDEX}.throughput.tx]'
+  graphs:
+    - uuid: b054692ae41e42c0b3345c0d577adec7
+      name: 'ICMP ping'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'AF60LR Radio'
+            key: icmpping
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: 'AF60LR Radio'
+            key: icmppingsec
