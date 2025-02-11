@@ -6,8 +6,8 @@ zabbix_export:
       name: Templates
   templates:
     - uuid: a93c34c4f21c4792b3f869f3ae642201
-      template: AirFiber_5U
-      name: AirFiber_5U
+      template: AirFiber
+      name: AirFiber
       description: |
         ## Overview
         
