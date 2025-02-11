@@ -27,7 +27,7 @@ zabbix_export:
               value: Speed
           triggers:
             - uuid: 0d8c133d09f1469580c4e4b079b7aa5c
-              expression: 'find(/AirFiber_5U/airFiberEthernetDataPortLinkSpeed,,"like","1000Mbps-Full")<>1'
+              expression: 'find(/AirFiber/airFiberEthernetDataPortLinkSpeed,,"like","1000Mbps-Full")<>1'
               name: 'Data Port Link Speed is Not Gigabit on AirFiber Unit {HOSTNAME}'
               priority: AVERAGE
         - uuid: bf52b33340cd4cd49ebadd8f08b1b95c
@@ -43,7 +43,7 @@ zabbix_export:
               value: RadioCorrrentStatus
           triggers:
             - uuid: 9399b3c1067f4f2aab15ab88eb909e4a
-              expression: last(/AirFiber_5U/AirFiberLinkState)=0
+              expression: last(/AirFiber/AirFiberLinkState)=0
               name: RadioLink_Lost
               priority: WARNING
         - uuid: 6651c0ad0eff4f5590cfbc3ae68e2178
@@ -197,7 +197,7 @@ zabbix_export:
               value: ICMP
           triggers:
             - uuid: 00b839cead634340955fe89aedc27615
-              expression: 'max(/AirFiber_5U/icmpping,#3)=0'
+              expression: 'max(/AirFiber/icmpping,#3)=0'
               name: 'Unavailable by ICMP ping'
               priority: HIGH
               description: 'Last three attempts returned timeout.  Please check device connectivity.'
@@ -289,7 +289,7 @@ zabbix_export:
               newvalue: 'false'
   triggers:
     - uuid: 147c6515151b4fdf9016f471f8a313db
-      expression: '(avg(/AirFiber_5U/AirFiberRXCapacity,10m)<250000000 or avg(/AirFiber_5U/AirFiberTXCapacity,10m)<250000000)'
+      expression: '(avg(/AirFiber/AirFiberRXCapacity,10m)<250000000 or avg(/AirFiber/AirFiberTXCapacity,10m)<250000000)'
       name: 'Low Link Capacity'
       priority: WARNING
   graphs:
@@ -299,7 +299,7 @@ zabbix_export:
         - color: 199C0D
           calc_fnc: ALL
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: icmpping
     - uuid: e5805d1155cf45dd9c440a9dd36bed05
       name: RadioLinkState
@@ -307,7 +307,7 @@ zabbix_export:
         - color: 199C0D
           calc_fnc: ALL
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: AirFiberLinkState
     - uuid: 92951a3599734df8aa088facd1d435b3
       name: 'Throughput TX/RX'
@@ -315,25 +315,25 @@ zabbix_export:
         - color: 199C0D
           calc_fnc: ALL
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: airFiberRFTotalOctetsReceived
         - sortorder: '1'
           color: F63100
           calc_fnc: ALL
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: airFiberRFTotalOctetsTrasmitted
     - uuid: 26c8741c99da437197dd8671642ee6f6
       name: 'TX\RX Capacity'
       graph_items:
         - color: 0000EE
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: AirFiberRXCapacity
         - sortorder: '1'
           color: F63100
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: AirFiberTXCapacity
     - uuid: bb5518e0f05d47b1851cb54ca158e0c4
       name: Uptime
@@ -341,11 +341,11 @@ zabbix_export:
         - color: 199C0D
           calc_fnc: ALL
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: AirFiberRadioLinkUptime
         - sortorder: '1'
           color: F63100
           calc_fnc: ALL
           item:
-            host: AirFiber_5U
+            host: AirFiber
             key: AirFiberUptime
