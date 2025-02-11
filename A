@@ -1,0 +1,351 @@
+zabbix_export:
+  version: '6.0'
+  date: '2023-09-21T09:53:22Z'
+  groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: a93c34c4f21c4792b3f869f3ae642201
+      template: AirFiber
+      name: AirFiber
+      description: |
+        ## Overview
+        
+        Template for AirFiber.
+      groups:
+        - name: Templates
+      items:
+        - uuid: 5881e17ee2ea4dd2b6df4062ddf5fbaf
+          name: 'Ethernet Data Port  Speed'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.41112.1.3.2.1.43.1
+          key: airFiberEthernetDataPortLinkSpeed
+          trends: '0'
+          value_type: CHAR
+          tags:
+            - tag: Network
+              value: Speed
+          triggers:
+            - uuid: 0d8c133d09f1469580c4e4b079b7aa5c
+              expression: 'find(/AirFiber/airFiberEthernetDataPortLinkSpeed,,"like","1000Mbps-Full")<>1'
+              name: 'Data Port Link Speed is Not Gigabit on AirFiber Unit {HOSTNAME}'
+              priority: AVERAGE
+        - uuid: bf52b33340cd4cd49ebadd8f08b1b95c
+          name: RadioLinkState
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.26.1
+          key: AirFiberLinkState
+          delay: 30s
+          valuemap:
+            name: AirFiberLinkState
+          tags:
+            - tag: Application
+              value: RadioCorrrentStatus
+          triggers:
+            - uuid: 9399b3c1067f4f2aab15ab88eb909e4a
+              expression: last(/AirFiber/AirFiberLinkState)=0
+              name: RadioLink_Lost
+              priority: WARNING
+        - uuid: 6651c0ad0eff4f5590cfbc3ae68e2178
+          name: DataPortState
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.27.1
+          key: AirFiberLinkStateDataPortState
+          delay: 30s
+          valuemap:
+            name: AirFiberLinkState
+          tags:
+            - tag: Application
+              value: RadioCorrrentStatus
+        - uuid: 1a8d84da7a0043659a684b3593aa03e5
+          name: RadioLinkUptime
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.44.1
+          key: AirFiberRadioLinkUptime
+          delay: 30s
+          units: s
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: RadioCorrrentStatus
+        - uuid: 79a3173f3abe49c3ae08227fc5ab187c
+          name: RadioLinkModulation
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.2.1
+          key: AirFiberRadioModulation
+          delay: 30s
+          valuemap:
+            name: AirFiberModulationList
+          tags:
+            - tag: Application
+              value: RadioCorrrentStatus
+        - uuid: 16f1964d00aa4c07a518d3b0f0790ed4
+          name: RadioLinkRemoteRXPoweChain0
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.19.1
+          key: AirFiberRemoteRXPoweChain0
+          delay: 30s
+          value_type: FLOAT
+          units: dBm
+          tags:
+            - tag: Application
+              value: RemoteHardware
+        - uuid: 25c21bb16b374d8cbbd3017952a6076a
+          name: RadioLinkRemoteRXPoweChain1
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.22.1
+          key: AirFiberRemoteRXPoweChain1
+          delay: 30s
+          value_type: FLOAT
+          units: dBm
+          tags:
+            - tag: Application
+              value: RemoteHardware
+        - uuid: f375097db0d84ed185521b8daeccf76c
+          name: 'RF Total Octets Received'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.41112.1.3.3.1.66.1
+          key: airFiberRFTotalOctetsReceived
+          delay: 5m
+          units: bps
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+            - type: MULTIPLIER
+              parameters:
+                - '8'
+        - uuid: 00221fe7efb442b0837f1584f3d53d8b
+          name: 'RF Total Octets Transmitted'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.41112.1.3.3.1.64.1
+          key: airFiberRFTotalOctetsTrasmitted
+          delay: 5m
+          units: bps
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+            - type: MULTIPLIER
+              parameters:
+                - '8'
+        - uuid: f5adf29e555a4020805a225aa348e217
+          name: RadioLinkRXCapacity
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.5.1
+          key: AirFiberRXCapacity
+          delay: 30s
+          units: bps
+          tags:
+            - tag: Wireless
+              value: Capacity
+        - uuid: 843b38cbb011494c8a9a22ad039af0c4
+          name: RadioLinkRXPoweChain0
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.11.1
+          key: AirFiberRXPoweChain0
+          delay: 30s
+          value_type: FLOAT
+          units: dBm
+          tags:
+            - tag: Application
+              value: Hardware
+        - uuid: 81c2661444a241ebade3c24c252cec3f
+          name: RadioLinkRXPoweChain1
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.14.1
+          key: AirFiberRXPoweChain1
+          delay: 30s
+          value_type: FLOAT
+          units: dBm
+          tags:
+            - tag: Application
+              value: Hardware
+        - uuid: 254fc1ecf3d24139973a826d502a4958
+          name: RadioLinkTXCapacity
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.41112.1.3.2.1.6.1
+          key: AirFiberTXCapacity
+          delay: 30s
+          units: bps
+          tags:
+            - tag: Wireless
+              value: Capacity
+        - uuid: 07e408a9cd994a68b9866eef26c6e613
+          name: Uptime
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.3.0
+          key: AirFiberUptime
+          delay: 30s
+          units: s
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: Info
+        - uuid: 43af54a529bb4af794a1d6950d05022a
+          name: ICMPping
+          type: SIMPLE
+          key: icmpping
+          tags:
+            - tag: Application
+              value: ICMP
+          triggers:
+            - uuid: 00b839cead634340955fe89aedc27615
+              expression: 'max(/AirFiber/icmpping,#3)=0'
+              name: 'Unavailable by ICMP ping'
+              priority: HIGH
+              description: 'Last three attempts returned timeout.  Please check device connectivity.'
+        - uuid: 9db0864cbf384f569338109dfb0191d6
+          name: 'ICMP loss'
+          type: SIMPLE
+          key: icmppingloss
+          history: 1w
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: Application
+              value: ICMP
+        - uuid: 8358f3dd52204a279105a7e756caaf0e
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          value_type: FLOAT
+          units: s
+          tags:
+            - tag: Application
+              value: ICMP
+      valuemaps:
+        - uuid: ee3a684b15de4a00b9077cbc13e33ea3
+          name: AirFiberGPS
+          mappings:
+            - value: '1'
+              newvalue: 'Off'
+            - value: '2'
+              newvalue: 'On'
+        - uuid: 77aac28182bb49c080a090b4aa1b683a
+          name: AirFiberLinkDuplex
+          mappings:
+            - value: '1'
+              newvalue: HalfDuplex
+            - value: '2'
+              newvalue: FullDuplex
+        - uuid: fe86cd0d125f4c27aa329681dbce970c
+          name: AirFiberLinkMode
+          mappings:
+            - value: '1'
+              newvalue: Master
+            - value: '2'
+              newvalue: Slave
+            - value: '3'
+              newvalue: Spectral
+        - uuid: bf52b33340cd4cd49ebadd8f08b1b95c
+          name: AirFiberLinkState
+          mappings:
+            - value: '0'
+              newvalue: Down
+            - value: '1'
+              newvalue: Up
+        - uuid: 81fc8784e0d747389e1e4db06b59d230
+          name: AirFiberModulationControl
+          mappings:
+            - value: '1'
+              newvalue: Manual
+            - value: '2'
+              newvalue: Auto
+        - uuid: ad26871ec9e34e8bb82fb55fb42675a8
+          name: AirFiberModulationList
+          mappings:
+            - value: '0'
+              newvalue: qPSK-SISO-1-4x
+            - value: '1'
+              newvalue: qPSK-SISO-1x
+            - value: '2'
+              newvalue: qPSK-MIMO-2x
+            - value: '4'
+              newvalue: qAM16-MIMO-4x
+            - value: '6'
+              newvalue: qAM64-MIMO-6x
+            - value: '8'
+              newvalue: qAM256-MIMO-8x
+        - uuid: d24fb21754d946b88e7c50121bc744e2
+          name: AirFiberRadioEnable
+          mappings:
+            - value: '1'
+              newvalue: Enabled
+            - value: '2'
+              newvalue: Disabled
+        - uuid: c7db59ca2dc54f7ca2bfd1090bdba0e1
+          name: TruthValue
+          mappings:
+            - value: '1'
+              newvalue: 'true'
+            - value: '2'
+              newvalue: 'false'
+  triggers:
+    - uuid: 147c6515151b4fdf9016f471f8a313db
+      expression: '(avg(/AirFiber/AirFiberRXCapacity,10m)<250000000 or avg(/AirFiber/AirFiberTXCapacity,10m)<250000000)'
+      name: 'Low Link Capacity'
+      priority: WARNING
+  graphs:
+    - uuid: 9ba1869927674a88bc6f2169401bd7b2
+      name: 'ICMP Ping'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: AirFiber
+            key: icmpping
+    - uuid: e5805d1155cf45dd9c440a9dd36bed05
+      name: RadioLinkState
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: AirFiber
+            key: AirFiberLinkState
+    - uuid: 92951a3599734df8aa088facd1d435b3
+      name: 'Throughput TX/RX'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: AirFiber
+            key: airFiberRFTotalOctetsReceived
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: AirFiber
+            key: airFiberRFTotalOctetsTrasmitted
+    - uuid: 26c8741c99da437197dd8671642ee6f6
+      name: 'TX\RX Capacity'
+      graph_items:
+        - color: 0000EE
+          item:
+            host: AirFiber
+            key: AirFiberRXCapacity
+        - sortorder: '1'
+          color: F63100
+          item:
+            host: AirFiber
+            key: AirFiberTXCapacity
+    - uuid: bb5518e0f05d47b1851cb54ca158e0c4
+      name: Uptime
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: AirFiber
+            key: AirFiberRadioLinkUptime
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: AirFiber
+            key: AirFiberUptime
